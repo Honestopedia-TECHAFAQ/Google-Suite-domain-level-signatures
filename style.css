@@ -1,0 +1,27 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+  }
+
+  #sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    background-color: #111;
+    padding-top: 20px;
+    color: white;
+  }
+
+  #sidebar a {
+    padding: 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+  }
+
+  #content {
+    margin-left: 250px;
+    padding: 20px;
+  }

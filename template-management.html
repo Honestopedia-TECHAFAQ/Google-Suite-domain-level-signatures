@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Management</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="sidebar">
+        <a href="template-management.html">Template Management</a>
+        <a href="#" onclick="openMenu('userManagement')">User Management</a>
+        <a href="#" onclick="openMenu('templatePreview')">Template Preview</a>
+        <a href="#" onclick="openMenu('auditTrail')">Audit Trail</a>
+        <a href="#" onclick="openMenu('settings')">Settings</a>
+        <a href="#" onclick="openMenu('helpSupport')">Help and Support</a>
+    </div>
+
+    <div id="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Email Signature Templates</h2>
+                    <div class="custom-file mb-3">
+                        <input type="file" class="custom-file-input" id="templateUpload" accept=".html">
+                        <label class="custom-file-label" for="templateUpload">Choose template file</label>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadTemplates()">Load Templates</button>
+                    <div id="templateList"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <h2>User Preview</h2>
+                    <!-- User input form -->
+                    <form id="userForm">
+                        <label for="apiEndpoint">API Endpoint:</label>
+                        <input type="text" id="apiEndpoint" class="form-control mb-2" placeholder="Enter API Endpoint"
+                            required>
+
+                        <label for="authToken">Authentication Token:</label>
+                        <input type="text" id="authToken" class="form-control mb-2" placeholder="Enter Authentication Token"
+                            required>
+
+                        <button type="button" class="btn btn-primary" onclick="fetchUsers()">Fetch Users</button>
+                    </form>
+
+                    <select class="form-control mb-3" id="userSelector" onchange="previewSignature()">
+                        <!-- Populate this dropdown with fetched users -->
+                        <option value="">Select a user</option>
+                        <!-- Fetched users will be added here -->
+                    </select>
+                    <div id="signaturePreview"></div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#viewTemplateModal">View Template</button>
+                    <button class="btn btn-warning" data-toggle="modal" data-target="#editTemplateModal">Edit Template</button>
+                    <button class="btn btn-danger" onclick="deleteTemplate()">Delete Template</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Template Modal -->
+    <div class="modal fade" id="viewTemplateModal" tabindex="-1" role="dialog" aria-labelledby="viewTemplateModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Add your modal content for viewing template here -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewTemplateModalLabel">View Template</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Placeholder content -->
+                    <p>Template content goes here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Template Modal -->
+    <div class="modal fade" id="editTemplateModal" tabindex="-1" role="dialog" aria-labelledby="editTemplateModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Add your modal content for editing template here -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTemplateModalLabel">Edit Template</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Placeholder content -->
+                    <p>Editable template content goes here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // template-management.js
+
+        // Sample template data
+        let templates = [
+            { id: 1, name: "Template 1", content: "<p>This is the content of Template 1.</p>" },
+            { id: 2, name: "Template 2", content: "<p>This is the content of Template 2.</p>" },
+            // Add more templates as needed
+        ];
+
+        function loadTemplates() {
+            // Display templates in #templateList
+            const templateListElement = document.getElementById('templateList');
+            templateListElement.innerHTML = ''; // Clear previous content
+
+            templates.forEach(template => {
+                const templateItem = document.createElement('div');
+                templateItem.innerHTML = `<p>${template.name}</p>`;
+                templateItem.onclick = () => viewTemplate(template);
+                templateListElement.appendChild(templateItem);
+            });
+        }
+
+        function previewSignature() {
+            const userSelector = document.getElementById('userSelector');
+            const selectedUser = userSelector.value;
+
+            // Implement logic to fetch and display user signature based on selected user
+            const signaturePreviewElement = document.getElementById('signaturePreview');
+            signaturePreviewElement.innerHTML = `<p>Preview for ${selectedUser}'s signature.</p>`;
+        }
+
+        function viewTemplate(template) {
+            // Display the content of the selected template in the viewTemplateModal
+            const viewTemplateModal = document.getElementById('viewTemplateModal');
+            const modalContent = viewTemplateModal.querySelector('.modal-body');
+            modalContent.innerHTML = template.content;
+
+            // Show the modal
+            $('#viewTemplateModal').modal('show');
+        }
+
+        function deleteTemplate() {
+            const templateToDelete = confirm("Are you sure you want to delete this template?");
+
+            if (templateToDelete) {
+                // Implement logic to delete the selected template
+                alert("Template deleted. Implement your deletion logic here.");
+                // Reload templates after deletion
+                loadTemplates();
+            }
+        }
+
+        function fetchUsers() {
+            const apiEndpoint = document.getElementById('apiEndpoint').value;
+            const authToken = document.getElementById('authToken').value;
+
+            // Placeholder URL for demonstration purposes, replace with your actual endpoint
+            const placeholderUrl = 'https://jsonplaceholder.typicode.com/users';
+
+            // Use the provided information to fetch users (replace this with your actual fetch logic)
+            fetch(placeholderUrl, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
+            })
+                .then(response => response.json())
+                .then(users => {
+                    // Populate the dropdown with fetched users
+                    const userSelector = document.getElementById('userSelector');
+                    userSelector.innerHTML = '<option value="">Select a user</option>';
+
+                    users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = user.name; // Adjust this based on your actual user object
+                        userSelector.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching users:', error);
+                });
+        }
+    </script>
+    <!-- Add Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
